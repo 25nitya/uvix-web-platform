@@ -1,3 +1,5 @@
+import ServicesSection from "@/components/ServicesSection";
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white">
@@ -18,9 +20,9 @@ export default function Home() {
           </h1>
 
           <p className="mt-8 max-w-2xl text-lg leading-8 text-zinc-400 md:text-xl">
-            UVIX TECHNOLOGIES combines AI, software engineering, cloud, cybersecurity,
-            and data to build scalable digital products and intelligent
-            business solutions.
+            UVIX TECHNOLOGIES combines AI, software engineering, cloud,
+            cybersecurity, and data to build scalable digital products
+            and intelligent business solutions.
           </p>
 
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -44,94 +46,8 @@ export default function Home() {
         </div>
       </section>
 
-
-      {/* Services Preview */}
-      <section className="border-t border-zinc-800 px-6 py-24">
-
-        <div className="mx-auto max-w-7xl">
-
-          <p className="text-sm uppercase tracking-[0.25em] text-zinc-500">
-            What we do
-          </p>
-
-          <h2 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight md:text-5xl">
-            From ideas to intelligent digital products.
-          </h2>
-
-          <div className="mt-16 grid gap-px overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-800 md:grid-cols-2 lg:grid-cols-3">
-
-            <div className="bg-black p-8">
-              <p className="text-sm text-zinc-500">01</p>
-              <h3 className="mt-6 text-2xl font-medium">
-                AI & Machine Learning
-              </h3>
-              <p className="mt-4 leading-7 text-zinc-400">
-                AI-powered applications, intelligent automation, LLM
-                solutions, and machine learning systems.
-              </p>
-            </div>
-
-            <div className="bg-black p-8">
-              <p className="text-sm text-zinc-500">02</p>
-              <h3 className="mt-6 text-2xl font-medium">
-                Software Engineering
-              </h3>
-              <p className="mt-4 leading-7 text-zinc-400">
-                Scalable web platforms, APIs, enterprise applications,
-                and custom software products.
-              </p>
-            </div>
-
-            <div className="bg-black p-8">
-              <p className="text-sm text-zinc-500">03</p>
-              <h3 className="mt-6 text-2xl font-medium">
-                Cloud & DevOps
-              </h3>
-              <p className="mt-4 leading-7 text-zinc-400">
-                Cloud-native infrastructure, deployment automation,
-                scalability, and reliable production systems.
-              </p>
-            </div>
-
-            <div className="bg-black p-8">
-              <p className="text-sm text-zinc-500">04</p>
-              <h3 className="mt-6 text-2xl font-medium">
-                Cybersecurity
-              </h3>
-              <p className="mt-4 leading-7 text-zinc-400">
-                Secure applications, identity, access control, and
-                security-focused engineering.
-              </p>
-            </div>
-
-            <div className="bg-black p-8">
-              <p className="text-sm text-zinc-500">05</p>
-              <h3 className="mt-6 text-2xl font-medium">
-                Data Engineering
-              </h3>
-              <p className="mt-4 leading-7 text-zinc-400">
-                Data platforms, pipelines, analytics infrastructure,
-                and data-driven solutions.
-              </p>
-            </div>
-
-            <div className="bg-black p-8">
-              <p className="text-sm text-zinc-500">06</p>
-              <h3 className="mt-6 text-2xl font-medium">
-                Product Engineering
-              </h3>
-              <p className="mt-4 leading-7 text-zinc-400">
-                End-to-end product development from architecture and
-                design to deployment and scale.
-              </p>
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
+      {/* Services */}
+      <ServicesSection />
 
       {/* CTA */}
       <section className="border-t border-zinc-800 px-6 py-32">
@@ -160,3 +76,4 @@ export default function Home() {
     </main>
   );
 }
+
