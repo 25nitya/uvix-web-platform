@@ -86,10 +86,14 @@ export default function CaseStudiesPage() {
                   </div>
                 </div>
 
+                {/* Case Study Link */}
                 <div className="mt-10">
-                  <span className="text-sm text-white transition group-hover:text-gray-400">
+                  <Link
+                    href={`/case-studies/${study.slug}`}
+                    className="text-sm text-white transition group-hover:text-gray-400"
+                  >
                     View case study →
-                  </span>
+                  </Link>
                 </div>
               </article>
             ))}
