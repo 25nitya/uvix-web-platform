@@ -23,7 +23,51 @@ model Service {
   icon        String?
   isActive    Boolean  @default(true)
   sortOrder   Int      @default(0)
+  offerings   String[] @default([])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Industry {
+  id          Int      @id @default(autoincrement())
+  name        String
+  slug        String   @unique
+  description String   @db.Text
+  icon        String?
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  solutions   String[] @default([])
+}
+
+
+model CaseStudy {
+  id           Int              @id @default(autoincrement())
+  number       String
+  slug         String           @unique
+  title        String
+  industry     String
+  description  String           @db.Text
+  services     String[]         @default([])
+  technologies String[]         @default([])
+  isPublished  Boolean          @default(true)
+  sortOrder    Int              @default(0)
+  detail       CaseStudyDetail?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}
+
+model CaseStudyDetail {
+  id             Int       @id @default(autoincrement())
+  caseStudyId    Int       @unique
+  overview       String    @db.Text
+  problem        String    @db.Text
+  solution       String    @db.Text
+  architecture   String    @db.Text
+  considerations String[]  @default([])
+  caseStudy      CaseStudy @relation(fields: [caseStudyId], references: [id], onDelete: Cascade)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 }
 

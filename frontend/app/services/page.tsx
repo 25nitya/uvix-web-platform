@@ -1,7 +1,40 @@
+
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { serviceCategories } from "@/data/services";
+import { apiGet } from "@/lib/api";
+
+interface ServiceCategory {
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  offerings: string[];
+  sortOrder: number;
+}
 
 export default function ServicesPage() {
+  const [serviceCategories, setServiceCategories] = useState<ServiceCategory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchServices() {
+      try {
+        const data = await apiGet<ServiceCategory[]>("/services");
+        setServiceCategories(data);
+      } catch (err) {
+        console.error("Failed to fetch services:", err);
+        setError("Unable to load services. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchServices();
+  }, []);
+
   return (
     <main className="min-h-screen bg-black text-white">
       {/* Hero */}
@@ -29,41 +62,51 @@ export default function ServicesPage() {
       {/* Services */}
       <section className="border-t border-white/10 px-6 py-24">
         <div className="mx-auto max-w-7xl">
-          <div className="space-y-0">
-            {serviceCategories.map((category) => (
-              <div
-                key={category.number}
-                className="border-b border-white/10 py-14"
-              >
-                <div className="grid gap-10 md:grid-cols-[120px_1fr_1.5fr]">
-                  <span className="text-sm text-gray-500">
-                    {category.number}
-                  </span>
+          {loading && (
+            <p className="py-10 text-gray-400">Loading services...</p>
+          )}
 
-                  <h2 className="text-3xl font-medium md:text-4xl">
-                    {category.title}
-                  </h2>
+          {error && (
+            <p className="py-10 text-red-400">{error}</p>
+          )}
 
-                  <div>
-                    <p className="max-w-xl text-lg leading-8 text-gray-400">
-                      {category.description}
-                    </p>
+          {!loading && !error && (
+            <div className="space-y-0">
+              {serviceCategories.map((category, index) => (
+                <div
+                  key={category.id}
+                  className="border-b border-white/10 py-14"
+                >
+                  <div className="grid gap-10 md:grid-cols-[120px_1fr_1.5fr]">
+                    <span className="text-sm text-gray-500">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
 
-                    <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                      {category.services.map((service) => (
-                        <div
-                          key={service}
-                          className="border border-white/10 px-5 py-4 text-gray-200 transition hover:border-white/30"
-                        >
-                          {service}
-                        </div>
-                      ))}
+                    <h2 className="text-3xl font-medium md:text-4xl">
+                      {category.title}
+                    </h2>
+
+                    <div>
+                      <p className="max-w-xl text-lg leading-8 text-gray-400">
+                        {category.description}
+                      </p>
+
+                      <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                        {category.offerings.map((offering) => (
+                          <div
+                            key={offering}
+                            className="border border-white/10 px-5 py-4 text-gray-200 transition hover:border-white/30"
+                          >
+                            {offering}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

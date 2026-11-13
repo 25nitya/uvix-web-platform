@@ -1,11 +1,41 @@
+
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { industries } from "@/data/industries";
+import { apiGet } from "@/lib/api";
+
+interface Industry {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  icon: string | null;
+  solutions: string[];
+  sortOrder: number;
+}
 
 export default function IndustriesPage() {
+  const [industries, setIndustries] = useState<Industry[]>([]);
   const [openIndustry, setOpenIndustry] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchIndustries() {
+      try {
+        const data = await apiGet<Industry[]>("/industries");
+        setIndustries(data);
+      } catch (err) {
+        console.error("Failed to fetch industries:", err);
+        setError("Unable to load industries. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchIndustries();
+  }, []);
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -33,58 +63,72 @@ export default function IndustriesPage() {
       {/* Industries */}
       <section className="border-t border-white/10 px-6 py-24">
         <div className="mx-auto max-w-7xl">
-          <div className="border-t border-white/20">
-            {industries.map((industry, index) => {
-              const isOpen = openIndustry === index;
+          {loading && (
+            <p className="py-10 text-gray-400">
+              Loading industries...
+            </p>
+          )}
 
-              return (
-                <div
-                  key={industry.number}
-                  className="border-b border-white/20"
-                >
-                  <button
-                    onClick={() =>
-                      setOpenIndustry(isOpen ? null : index)
-                    }
-                    className="flex w-full items-center justify-between py-8 text-left"
+          {error && (
+            <p className="py-10 text-red-400">
+              {error}
+            </p>
+          )}
+
+          {!loading && !error && (
+            <div className="border-t border-white/20">
+              {industries.map((industry, index) => {
+                const isOpen = openIndustry === industry.id;
+
+                return (
+                  <div
+                    key={industry.id}
+                    className="border-b border-white/20"
                   >
-                    <div className="flex items-center gap-6">
-                      <span className="text-sm text-gray-500">
-                        {industry.number}
-                      </span>
+                    <button
+                      onClick={() =>
+                        setOpenIndustry(isOpen ? null : industry.id)
+                      }
+                      className="flex w-full items-center justify-between py-8 text-left"
+                    >
+                      <div className="flex items-center gap-6">
+                        <span className="text-sm text-gray-500">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
 
-                      <h2 className="text-2xl font-medium md:text-4xl">
-                        {industry.title}
-                      </h2>
-                    </div>
-
-                    <span className="text-3xl font-light">
-                      {isOpen ? "−" : "+"}
-                    </span>
-                  </button>
-
-                  {isOpen && (
-                    <div className="grid gap-8 pb-10 pl-12 md:grid-cols-2">
-                      <p className="max-w-md text-lg leading-8 text-gray-400">
-                        {industry.description}
-                      </p>
-
-                      <div className="grid gap-3">
-                        {industry.solutions.map((solution) => (
-                          <div
-                            key={solution}
-                            className="border-b border-white/10 py-3 text-lg text-gray-200"
-                          >
-                            {solution}
-                          </div>
-                        ))}
+                        <h2 className="text-2xl font-medium md:text-4xl">
+                          {industry.name}
+                        </h2>
                       </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+
+                      <span className="text-3xl font-light">
+                        {isOpen ? "−" : "+"}
+                      </span>
+                    </button>
+
+                    {isOpen && (
+                      <div className="grid gap-8 pb-10 pl-12 md:grid-cols-2">
+                        <p className="max-w-md text-lg leading-8 text-gray-400">
+                          {industry.description}
+                        </p>
+
+                        <div className="grid gap-3">
+                          {industry.solutions.map((solution) => (
+                            <div
+                              key={solution}
+                              className="border-b border-white/10 py-3 text-lg text-gray-200"
+                            >
+                              {solution}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
 

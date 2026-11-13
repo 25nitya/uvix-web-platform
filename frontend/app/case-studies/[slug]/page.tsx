@@ -1,8 +1,24 @@
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { caseStudies } from "@/data/caseStudies";
-import { caseStudyDetails } from "@/data/caseStudyDetails";
+
+interface CaseStudy {
+  id: number;
+  number: string;
+  slug: string;
+  title: string;
+  industry: string;
+  description: string;
+  services: string[];
+  technologies: string[];
+  detail: {
+    overview: string;
+    problem: string;
+    solution: string;
+    architecture: string;
+    considerations: string[];
+  } | null;
+}
 
 type Props = {
   params: Promise<{
@@ -13,18 +29,32 @@ type Props = {
 export default async function CaseStudyPage({ params }: Props) {
   const { slug } = await params;
 
-  const study = caseStudies.find((item) => item.slug === slug);
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  if (!study) {
+  if (!apiUrl) {
+    throw new Error("NEXT_PUBLIC_API_URL is not configured");
+  }
+
+  const response = await fetch(
+    `${apiUrl}/case-studies/${encodeURIComponent(slug)}`,
+    { cache: "no-store" }
+  );
+
+  if (response.status === 404) {
     notFound();
   }
 
-  const details =
-    caseStudyDetails[slug as keyof typeof caseStudyDetails];
+  if (!response.ok) {
+    throw new Error(`Failed to fetch case study: ${response.status}`);
+  }
 
-  if (!details) {
+  const study: CaseStudy = await response.json();
+
+  if (!study.detail) {
     notFound();
   }
+
+  const details = study.detail;
 
   return (
     <main className="min-h-screen bg-black px-6 pb-32 pt-32 text-white sm:px-8 md:pb-40 md:pt-40">
@@ -182,4 +212,3 @@ export default async function CaseStudyPage({ params }: Props) {
     </main>
   );
 }
-

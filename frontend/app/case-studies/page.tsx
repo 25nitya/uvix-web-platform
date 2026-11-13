@@ -1,7 +1,34 @@
-import Link from "next/link";
-import { caseStudies } from "@/data/caseStudies";
 
-export default function CaseStudiesPage() {
+import Link from "next/link";
+
+interface CaseStudy {
+  id: number;
+  number: string;
+  slug: string;
+  title: string;
+  industry: string;
+  description: string;
+  services: string[];
+  technologies: string[];
+}
+
+export default async function CaseStudiesPage() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  if (!apiUrl) {
+    throw new Error("NEXT_PUBLIC_API_URL is not configured");
+  }
+
+  const response = await fetch(`${apiUrl}/case-studies`, {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch case studies: ${response.status}`);
+  }
+
+  const caseStudies: CaseStudy[] = await response.json();
+
   return (
     <main className="min-h-screen bg-black text-white">
       {/* Hero */}
@@ -31,7 +58,7 @@ export default function CaseStudiesPage() {
           <div className="grid gap-8 md:grid-cols-2">
             {caseStudies.map((study) => (
               <article
-                key={study.number}
+                key={study.id}
                 className="group border border-white/10 p-8 transition hover:border-white/30 md:p-10"
               >
                 <div className="flex items-center justify-between">
