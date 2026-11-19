@@ -1,3 +1,4 @@
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module.js';
 
@@ -9,9 +10,17 @@ async function bootstrap() {
   // All API routes will start with /api
   app.setGlobalPrefix('api');
 
-  // Allow requests from the local Next.js frontend
+  // Read allowed frontend origins from environment variables
+  const allowedOrigins = (
+    process.env.CORS_ORIGINS ||
+    'http://localhost:3000,http://localhost:3001'
+  )
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://localhost:3001'],
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,
   });
@@ -20,7 +29,7 @@ async function bootstrap() {
 
   await app.listen(port);
 
-  console.log(`UVIX API running at http://localhost:${port}/api`);
+  console.log(`UVIX API listening on port ${port}`);
 }
 
 bootstrap();
